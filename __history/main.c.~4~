@@ -1,0 +1,47 @@
+#include <16F877.h>
+#device ADC=10
+
+#FUSES XT,NOWDT,NOPROTECT,NOBROWNOUT,NOLVP,NOPUT,NOWRT,NODEBUG,NOCPD               
+
+    
+                //No low voltage prgming, B3(PIC16) or B5(PIC18) used for I/O
+
+#use delay(crystal=4MHz)
+#use fast_io(c)
+#use fast_io(e)
+#use fast_io(b)
+
+#define use_portb_lcd TRUE
+
+#include <lcd.c>
+
+#INT_AD
+void ADC_Kesmesi(){
+   output_high(pin_C5);
+   delay_ms(200);
+   output_low(pin_C5);
+
+
+}
+
+unsigned long int bilgi;
+float sicaklik;
+int a;
+
+void main()
+{
+   setup_psp(PSP_DISABLED);
+   setup_timer_1(T1_DISABLED);
+    setup_timer_2(T2_DISABLED,0,1);
+   setup_CCP1(CCP_OFF);
+   setup_CCP2(CCP_OFF);
+   
+   set_tris_c(0x00);
+   set_tris_e(0x0F);
+
+   while(TRUE)
+   {
+      //TODO: User Code
+   }
+
+}

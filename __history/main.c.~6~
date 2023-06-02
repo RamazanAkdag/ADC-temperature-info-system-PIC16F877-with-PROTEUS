@@ -1,0 +1,72 @@
+#include <16F877.h>
+#device ADC=10
+
+#FUSES XT,NOWDT,NOPROTECT,NOBROWNOUT,NOLVP,NOPUT,NOWRT,NODEBUG,NOCPD               
+
+    
+                //No low voltage prgming, B3(PIC16) or B5(PIC18) used for I/O
+
+#use delay(crystal=4MHz)
+#use fast_io(c)
+#use fast_io(e)
+#use fast_io(b)
+
+#define use_portb_lcd TRUE
+
+#include <lcd.c>
+
+#INT_AD
+void ADC_Kesmesi(){
+   output_high(pin_C5);
+   delay_ms(200);
+   output_low(pin_C5);
+
+
+}
+
+unsigned long int bilgi;
+float sicaklik;
+int a;
+
+void main()
+{
+  /* setup_psp(PSP_DISABLED);//PSP birimi devre dýþý
+   setup_timer_1(T1_DISABLED);//T1 zamanlayýcýsý devre dýþý
+   setup_timer_2(T2_DISABLED,0,1);//T2 devre dýþý
+   setup_CCP1(CCP_OFF);//CCP1 devre dýþý
+   setup_CCP2(CCP_OFF);//CCP2 devre dýþý*/
+   
+   set_tris_c(0x00);
+   set_tris_e(0x0F);
+   
+   output_c(0x00);
+   
+   setup_adc(adc_clock_div_32);//ADC clock frekansý fosc/32
+   setup_adc_ports(ALL_ANALOG);//tüm AN giriþler analog
+   
+   enable_interrupts(INT_AD);//Ad çevrimþi bitti kesmesi tanýtýlýyor
+   enable_interrupts(GLOBAL);//tüm kesmeler aktif
+   
+   lcd_init();//lcd hazýla
+   
+   printf(lcd_putc,"\f \t Sicaklik");
+   printf(lcd_putc,"\n \t Uygulamasi");
+   delay_ms(1500);
+   
+   
+   
+
+   while(TRUE)
+   {
+      //TODO: User Code
+      set_adc_channel(5);//RE/AN5 ucundaki sinyal A/D iþlemine atbi tutulacak
+      delay_us(20);
+      bilgi = read_adc();//ADC sonucu bilgiye aktarýldý
+      
+      sicaklik = (bilgi*(5.0/1024))/0.10041;
+      printf(lcd_putc,"\f dijital = %lu",bilgi);
+      printf(lcd_putc,"\n sicaklik = %.0f%cC",sicaklik,223);
+      
+   }
+
+}
